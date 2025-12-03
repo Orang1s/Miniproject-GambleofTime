@@ -1,0 +1,6 @@
+flight_id,carrier,origin,destination,departure_time,arrival_time,delay_minutes,status
+FL001,AA,JFK,LAX,2024-01-01 08:00,2024-01-01 11:30,15,on-time
+FL002,DL,ORD,ATL,2024-01-01 09:15,2024-01-01 11:45,0,on-time
+FL003,UA,SFO,DEN,2024-01-01 10:30,2024-01-01 13:15,45,delayed
+FL004,WN,DAL,HOU,2024-01-01 12:00,2024-01-01 13:15,0,on-time
+FL005,AA,MIA,BOS,2024-01-01 14:30,2024-01-01 17:45,30,delayed

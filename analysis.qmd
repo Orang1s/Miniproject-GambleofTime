@@ -13,55 +13,119 @@ This page contains the detailed analysis of flight data from the Department of T
 #| eval: false
 #| label: load-data
 
-# Example code for loading your CSV files
-# Uncomment and modify based on your actual CSV files
+# Load necessary libraries
+library(readr)
+library(dplyr)
+library(ggplot2)
 
-# library(readr)
-# flight_data <- read_csv("data/your_flight_data.csv")
-# head(flight_data)
+# Load your CSV files
+# Replace 'example_flight_data.csv' with your actual CSV file names
+flight_data <- read_csv("data/example_flight_data.csv")
+
+# Display first few rows
+head(flight_data)
+
+# Basic summary
+summary(flight_data)
 ```
+
+**Note**: The code blocks above are set to `eval: false` by default. Change to `eval: true` when you're ready to execute them with your actual data.
 
 ## Key Findings
 
-### Finding 1: [Your First Finding]
+### Finding 1: Flight Delays by Carrier
 
-[Add your analysis here]
+Analyze which carriers have the most delays.
 
 ```{r}
 #| echo: true
 #| eval: false
-#| label: finding-1
+#| label: finding-1-delays
 
-# Add your visualization code here
-# Example:
-# library(ggplot2)
-# ggplot(flight_data, aes(x = variable1, y = variable2)) +
-#   geom_point() +
-#   labs(title = "Your Chart Title")
+# Calculate average delay by carrier
+delay_summary <- flight_data %>%
+  group_by(carrier) %>%
+  summarise(
+    avg_delay = mean(delay_minutes, na.rm = TRUE),
+    total_flights = n()
+  ) %>%
+  arrange(desc(avg_delay))
+
+# Visualize
+ggplot(delay_summary, aes(x = reorder(carrier, avg_delay), y = avg_delay)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Average Delay by Carrier",
+    x = "Carrier",
+    y = "Average Delay (minutes)"
+  ) +
+  theme_minimal()
 ```
 
-### Finding 2: [Your Second Finding]
+### Finding 2: Flight Routes Analysis
 
-[Add your analysis here]
+Examine the most common routes and their performance.
 
 ```{r}
 #| echo: true
 #| eval: false
-#| label: finding-2
+#| label: finding-2-routes
 
-# Add your visualization code here
+# Create route identifier and analyze
+route_analysis <- flight_data %>%
+  mutate(route = paste(origin, "→", destination)) %>%
+  group_by(route) %>%
+  summarise(
+    flight_count = n(),
+    avg_delay = mean(delay_minutes, na.rm = TRUE)
+  ) %>%
+  arrange(desc(flight_count))
+
+# Display top routes
+head(route_analysis, 10)
+
+# Visualize top routes
+route_analysis %>%
+  head(10) %>%
+  ggplot(aes(x = reorder(route, flight_count), y = flight_count)) +
+  geom_col(fill = "coral") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Flight Routes",
+    x = "Route",
+    y = "Number of Flights"
+  ) +
+  theme_minimal()
 ```
 
-### Finding 3: [Your Third Finding]
+### Finding 3: Flight Status Distribution
 
-[Add your analysis here]
+Analyze the distribution of flight statuses (on-time vs delayed vs cancelled).
 
 ```{r}
 #| echo: true
 #| eval: false
-#| label: finding-3
+#| label: finding-3-status
 
-# Add your visualization code here
+# Count flights by status
+status_summary <- flight_data %>%
+  group_by(status) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = round(count / sum(count) * 100, 1))
+
+# Create a pie chart or bar chart
+ggplot(status_summary, aes(x = status, y = count, fill = status)) +
+  geom_col() +
+  geom_text(aes(label = paste0(count, "\n(", percentage, "%)")), 
+            vjust = -0.5) +
+  labs(
+    title = "Flight Status Distribution",
+    x = "Status",
+    y = "Number of Flights"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
 ## Summary Statistics
@@ -71,8 +135,23 @@ This page contains the detailed analysis of flight data from the Department of T
 #| eval: false
 #| label: summary-stats
 
-# Add code for summary statistics
-# summary(flight_data)
+# Overall summary statistics
+cat("Total number of flights:", nrow(flight_data), "\n")
+cat("Average delay time:", mean(flight_data$delay_minutes, na.rm = TRUE), "minutes\n")
+cat("Median delay time:", median(flight_data$delay_minutes, na.rm = TRUE), "minutes\n")
+
+# Detailed summary
+summary(flight_data)
+
+# Additional statistics by carrier
+flight_data %>%
+  group_by(carrier) %>%
+  summarise(
+    flights = n(),
+    avg_delay = mean(delay_minutes, na.rm = TRUE),
+    max_delay = max(delay_minutes, na.rm = TRUE),
+    min_delay = min(delay_minutes, na.rm = TRUE)
+  )
 ```
 
 ## Conclusions
