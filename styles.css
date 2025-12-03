@@ -1,0 +1,33 @@
+/* Custom CSS for the Quarto website */
+
+/* Main body styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header styling */
+h1, h2, h3 {
+  color: #2c3e50;
+}
+
+/* Code blocks */
+pre {
+  background-color: #f8f9fa;
+  border-left: 3px solid #007bff;
+  padding: 10px;
+}
+
+/* Tables */
+table {
+  margin: 20px 0;
+}
+
+/* Links */
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

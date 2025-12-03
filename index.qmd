@@ -1,0 +1,25 @@
+---
+title: "Gamble of Time - Flight Data Analysis"
+---
+
+## Welcome
+
+This is the mini project from Georgetown DSAN6300 Database and SQL. The goal is to analyze the flight data from the Department of Transportation and provide valuable insights.
+
+## Project Overview
+
+This project examines flight data to uncover patterns, trends, and insights that can help understand:
+
+- Flight delays and cancellations
+- Carrier performance
+- Route efficiency
+- Temporal patterns in flight operations
+
+## Navigation
+
+- **[Analysis](analysis.qmd)**: View the detailed analysis and findings
+- **[About](about.qmd)**: Learn more about this project
+
+## Data Source
+
+The data for this analysis comes from the Department of Transportation's flight database.

@@ -1,0 +1,84 @@
+---
+title: "Flight Data Analysis"
+---
+
+## Overview
+
+This page contains the detailed analysis of flight data from the Department of Transportation.
+
+## Data Loading
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: load-data
+
+# Example code for loading your CSV files
+# Uncomment and modify based on your actual CSV files
+
+# library(readr)
+# flight_data <- read_csv("data/your_flight_data.csv")
+# head(flight_data)
+```
+
+## Key Findings
+
+### Finding 1: [Your First Finding]
+
+[Add your analysis here]
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: finding-1
+
+# Add your visualization code here
+# Example:
+# library(ggplot2)
+# ggplot(flight_data, aes(x = variable1, y = variable2)) +
+#   geom_point() +
+#   labs(title = "Your Chart Title")
+```
+
+### Finding 2: [Your Second Finding]
+
+[Add your analysis here]
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: finding-2
+
+# Add your visualization code here
+```
+
+### Finding 3: [Your Third Finding]
+
+[Add your analysis here]
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: finding-3
+
+# Add your visualization code here
+```
+
+## Summary Statistics
+
+```{r}
+#| echo: true
+#| eval: false
+#| label: summary-stats
+
+# Add code for summary statistics
+# summary(flight_data)
+```
+
+## Conclusions
+
+[Add your conclusions based on the analysis]
+
+## Next Steps
+
+[Optional: Add any future work or additional analysis planned]
