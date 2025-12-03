@@ -153,7 +153,7 @@ fig
 **Insight.** Note the massive drop on Thanksgiving Day followed by an immediate increase on the 26th. 
 Although the holiday season is always considered busy, the holiday itself is empty. It is reasonable to see this phenomenon because people are celebrating on the holidays, and go back to work after spending time with family in different places.
 
-### Weekday Load — Picking Your Travel Day & Preparing For The Inevitibles
+### Weekday Load: Picking Your Travel Day & Preparing For The Inevitibles
 
 Thanksgiving week also exposes structural weekday differences. Wednesday shows the heaviest burden, while Saturday is comparatively quiet.
 
@@ -288,7 +288,7 @@ Markdown(display_table.to_markdown(index=False))
 
 ## Conclusion: Beating the House
 
-The "Gamble of Time" is not a game of pure chance. It is a system of variables—Calendar, Geography, and Carrier—that can be analyzed and mitigated.
+The "Gamble of Time" is not a game of pure chance. It is a system of variables: Calendar, Geography, and Carrier that can be analyzed and mitigated.
 
 To beat this game: the odds in November 2017, a data-driven traveler would have:
 
@@ -296,7 +296,7 @@ To beat this game: the odds in November 2017, a data-driven traveler would have:
 - Skipped SFO connections when fog threatened and favored SEA/PDX instead.
 - Bet on Stability: Chosen Southwest or Alaska Airlines for time-critical trips.
 
-While we cannot control the weather, understanding these patterns lets us manage the **Gamble of Time**—and maybe even tilt it in our favor.
+While we cannot control the weather, understanding these patterns lets us manage the **Gamble of Time**, and maybe even tilt it in our favor.
 
 ## Limitations:
 - This analysis focuses exclusively on November 2017, but Airline performance is highly seasonal so this finding is hard to generalize.
