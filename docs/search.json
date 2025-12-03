@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "The Gamble of Time",
+    "section": "",
+    "text": "In November 2017, nearly 454,162 passengers placed a bet against the clock. Most won, 99.7 % of flights completed their journey, yet the remaining 1,418 cancellations still displaced thousands of travelers, often costing missed important meetings or family events. Even one cancellation might cause someone to lose a job opportunity or even missed the last sight to love ones.\nAs data scientists, we ask: Is it just bad luck, or is the system rigged?\nThis analysis explores the “Gamble of Time” during one of the busiest travel periods of the year by looking at three risk factors: the calendar, the dealer (airlines), and the house rules (cancelation causes).\n\n\n\n\n\n\nNoteKey Metric\n\n\n\n99.7 % reliability rate — but the other 0.3 % clusters in predictable “danger zones.”"
+  },
+  {
+    "objectID": "index.html#introduction-the-stakes",
+    "href": "index.html#introduction-the-stakes",
+    "title": "The Gamble of Time",
+    "section": "",
+    "text": "In November 2017, nearly 454,162 passengers placed a bet against the clock. Most won, 99.7 % of flights completed their journey, yet the remaining 1,418 cancellations still displaced thousands of travelers, often costing missed important meetings or family events. Even one cancellation might cause someone to lose a job opportunity or even missed the last sight to love ones.\nAs data scientists, we ask: Is it just bad luck, or is the system rigged?\nThis analysis explores the “Gamble of Time” during one of the busiest travel periods of the year by looking at three risk factors: the calendar, the dealer (airlines), and the house rules (cancelation causes).\n\n\n\n\n\n\nNoteKey Metric\n\n\n\n99.7 % reliability rate — but the other 0.3 % clusters in predictable “danger zones.”"
+  },
+  {
+    "objectID": "index.html#the-shuffle-the-thanksgiving-spike",
+    "href": "index.html#the-shuffle-the-thanksgiving-spike",
+    "title": "The Gamble of Time",
+    "section": "1. The Shuffle: The Thanksgiving Spike",
+    "text": "1. The Shuffle: The Thanksgiving Spike\nThe system breathes. It stresses, and it recovers. By analyzing daily flight volumes and their trailing 3-day averages, we can see the precise moment the system “crashes.”\n\n\n\n\n                            \n                                            \n\n\nFigure 1: Daily Flight Volume vs. Rolling Average (Nov 2017)\n\n\n\n\nInsight. Note the massive drop on Thanksgiving Day followed by an immediate increase on the 26th. Although the holiday season is always considered busy, the holiday itself is empty. It is reasonable to see this phenomenon because people are celebrating on the holidays, and go back to work after spending time with family in different places.\n\nWeekday Load — Picking Your Travel Day & Preparing For The Inevitibles\nThanksgiving week also exposes structural weekday differences. Wednesday shows the heaviest burden, while Saturday is comparatively quiet.\n\n\n\n\n                            \n                                            \n\n\nFigure 2: Flight Volume by Day of Week\n\n\n\n\nTakeaway: When travelling on Wednesday, airport can increase staff members on duty to maintain the flow in airport and prevent potential delays. Travellers should try book flights with careful considerations on buffer time to prepare for potential delays. Weekends stay lighter because most leisure travelers aim to return Sunday and business flyers stay home, so Saturday actually offers some breathing room. But this month’s data can potentially be affected by Thanksgiving compare to normal weekend patterns. Still, while Sunday, Nov 26th was the single busiest day, Wednesday captured the highest total volume for the month. This is driven by two factors:\n– Calendar Structure: November 2017 contained five Wednesdays compared to only four Sundays.\n– The ‘Getaway’: Wednesday, Nov 22nd (right before Thanksgiving) is a peak travel day, compounding the volume of the standard business-travel traffic seen on typical Wednesdays."
+  },
+  {
+    "objectID": "index.html#the-dealers-airline-risk-profiles",
+    "href": "index.html#the-dealers-airline-risk-profiles",
+    "title": "The Gamble of Time",
+    "section": "2. The Dealers: Airline Risk Profiles",
+    "text": "2. The Dealers: Airline Risk Profiles\nNot all airlines play by the same rules. Some, like Alaska Airlines, take a ‘high reward, managed risk’ approach—arriving early yet keeping delays capped—so the chart below highlights which carrier is the better bet when a tight connection really matters.\n\n\n\n\n                            \n                                            \n\n\nFigure 3: Airline Performance: Max Early vs. Max Delay (Click on legend to filter)\n\n\n\n\n\nSafe bet: Southwest and Alaska stands out having the least delay time and Alaska also holds the earliest arrival record. Hence it is the best option to consider when travelling with emergency\nTail risk: American (AA) and Spirit (NK) recorded extreme operational failures exceeding 24 hours. Build buffer time when flying them during peak holidays.\nBudget Suprise: Frontier Airlines defies the “unreliable budget carrier” stereotype. In this dataset, they outperformed Delta and Virgin America in mitigating extreme delay events."
+  },
+  {
+    "objectID": "index.html#the-house-edge-why-flights-fail",
+    "href": "index.html#the-house-edge-why-flights-fail",
+    "title": "The Gamble of Time",
+    "section": "3. The House Edge: Why Flights Fail",
+    "text": "3. The House Edge: Why Flights Fail\nWhen flights cancel, “weather” is the usual suspect—but the data reveals geographic fingerprints.\n\n\n\n\n                            \n                                            \n\n\nFigure 4: Top Cancellation Reasons by Airport\n\n\n\n\n\nSan Francisco (SFO): 100 % of cancellations are “Congestion”, it might have been due to the airport design.\nChicago (MDW/ORD) & Seattle (SEA): Worse weather than california so in here people are betting against the weather.\nInsights: The types of cancelation reason are nothing that travellers have controls on, but knowing the reasoning behind the cancallation can help people make better planning."
+  },
+  {
+    "objectID": "index.html#the-danger-zones",
+    "href": "index.html#the-danger-zones",
+    "title": "The Gamble of Time",
+    "section": "4. The Danger Zones",
+    "text": "4. The Danger Zones\nRegional spokes are the “black holes” of time. These airport + airline combinations carry the highest average departure delays for each carrier.\n\n\n\n\nTable 1: Highest Average Delays by Airline & Airport\n\n\n\n\n\n\n\n\n\n\n\nAirline_Name\nAirport_Name\nAvg_Delay\n\n\n\n\nUnited Air Lines Inc.\nKnoxville, TN: McGhee Tyson\n43.1\n\n\nSkyWest Airlines Inc.\nJacksonville, FL: Jacksonville International\n42.5\n\n\nDelta Air Lines Inc.\nSouth Bend, IN: South Bend International\n41.9\n\n\nSpirit Air Lines\nCharlotte Amalie, VI: Cyril E King\n37.1\n\n\nExpressJet Airlines LLC\nBuffalo, NY: Buffalo Niagara International\n33.1\n\n\nVirgin America\nKahului, HI: Kahului Airport\n32.7\n\n\nFrontier Airlines Inc.\nBismarck/Mandan, ND: Bismarck Municipal\n29.5\n\n\nJetBlue Airways\nSeattle, WA: Seattle/Tacoma International\n28.4\n\n\nAlaska Airlines Inc.\nSanta Barbara, CA: Santa Barbara Municipal\n22.7\n\n\nAmerican Airlines Inc.\nMission/McAllen/Edinburg, TX: McAllen Miller International\n22.4\n\n\nSouthwest Airlines Co.\nNewark, NJ: Newark Liberty International\n16\n\n\nHawaiian Airlines Inc.\nPortland, OR: Portland International\n15.7\n\n\n\n\n\n\n\n\n\nUnited ⮕ Knoxville (TYS) SkyWest ⮕ Jacksonville (JAX) and Delta ⮕ South Bend (SBN) average 40+ minutes of departure delay.\nThis data does not show how bad an airport or an airline is, but it is showing how people should plan their trips when travelling to specific places, to have better odds avoding the “always-delay” airlines."
+  },
+  {
+    "objectID": "index.html#conclusion-beating-the-house",
+    "href": "index.html#conclusion-beating-the-house",
+    "title": "The Gamble of Time",
+    "section": "Conclusion: Beating the House",
+    "text": "Conclusion: Beating the House\nThe “Gamble of Time” is not a game of pure chance. It is a system of variables—Calendar, Geography, and Carrier—that can be analyzed and mitigated.\nTo beat this game: the odds in November 2017, a data-driven traveler would have:\n\nAvoided the post-holiday Sunday rush (Nov 26) or padded their layovers.\nSkipped SFO connections when fog threatened and favored SEA/PDX instead.\nBet on Stability: Chosen Southwest or Alaska Airlines for time-critical trips.\n\nWhile we cannot control the weather, understanding these patterns lets us manage the Gamble of Time—and maybe even tilt it in our favor."
+  },
+  {
+    "objectID": "index.html#limitations",
+    "href": "index.html#limitations",
+    "title": "The Gamble of Time",
+    "section": "Limitations:",
+    "text": "Limitations:\n\nThis analysis focuses exclusively on November 2017, but Airline performance is highly seasonal so this finding is hard to generalize.\nSome of the flights might delay in departure but still arrives on time.\nIn the future, extend to a complete, yearly data can help better in discovering the trends in flight delays and can produce stronger planning guidance."
+  }
+]

@@ -1,0 +1,304 @@
+---
+title: "The Gamble of Time"
+subtitle: "Surviving the Holiday Travel Rush | November 2017 Analysis"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    page-layout: full
+    css: styles.css
+---
+
+```{python}
+#| echo: false
+#| warning: false
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from pathlib import Path
+from IPython.display import Markdown
+
+results_dir = Path("Results")
+
+def read_csv(filename: str) -> pd.DataFrame:
+    path = results_dir / filename
+    if not path.exists():
+        raise FileNotFoundError(f"Missing data file: {path}")
+    return pd.read_csv(path)
+
+df_delay = read_csv("hw4_Xiaolong_Zhou_xz702_Prob1.csv")
+df_early = read_csv("hw4_Xiaolong_Zhou_xz702_Prob2.csv")
+df_daily = read_csv("hw4_Xiaolong_Zhou_xz702_Prob7.csv")
+df_cancel = read_csv("hw4_Xiaolong_Zhou_xz702_Prob6b.csv")
+df_bad_airports = read_csv("hw4_Xiaolong_Zhou_xz702_Prob5.csv")
+df_dow = read_csv("hw4_Xiaolong_Zhou_xz702_Prob3.csv")
+df_cancel_count = read_csv("hw4_Xiaolong_Zhou_xz702_Prob6a.csv")
+
+df_daily["FlightDate"] = pd.to_datetime(df_daily["FlightDate"])
+
+df_risk = (
+    df_delay.merge(df_early, on="Name")
+    .assign(
+        Airline_Short=lambda d: d["Name"].str.split(":").str[0],
+        Max_Early_Neg=lambda d: -d["Max_EarlyDepMin"],
+    )
+    .sort_values("Max_Delay_Minutes")
+)
+
+df_cancel["Airport_Label"] = df_cancel["Airport_Name"].str.split(":").str[-1].str.strip()
+df_cancel["Reason_Label"] = df_cancel["Reason_Description"].replace(
+    {"National Air System": "Congestion"}
+)
+top_airports = (
+    df_cancel.groupby("Airport_Name")["Reason_Count"].sum().nlargest(10).index
+)
+df_cancel_top = df_cancel[df_cancel["Airport_Name"].isin(top_airports)]
+
+display_table = (
+    df_bad_airports[["Airline_Name", "Airport_Name", "Avg_Delay"]]
+    .assign(
+        Airline_Name=lambda d: d["Airline_Name"].str.split(":").str[0],
+        Avg_Delay=lambda d: d["Avg_Delay"].round(1),
+    )
+    .sort_values("Avg_Delay", ascending=False)
+)
+
+weekday_sorted = df_dow.sort_values("Flight_Count", ascending=False).reset_index(drop=True)
+weekday_sorted["Color"] = "Others"
+if not weekday_sorted.empty:
+    weekday_sorted.loc[0, "Color"] = "Top"
+if len(weekday_sorted) > 1:
+    weekday_sorted.loc[1, "Color"] = "Second"
+color_map = {"Top": "#f94144", "Second": "#f9c74f", "Others": "#adb5bd"}
+
+total_flights = int(df_dow["Flight_Count"].sum())
+cancellations = int(df_cancel_count["Cancelled_Count"].iloc[0])
+reliability_pct = 100 * (1 - cancellations / total_flights)
+total_flights_fmt = f"{total_flights:,}"
+cancellations_fmt = f"{cancellations:,}"
+reliability_pct_fmt = f"{reliability_pct:.1f}"
+danger_pct_fmt = f"{100 - reliability_pct:.1f}"
+```
+
+## Introduction: The Stakes
+
+In November 2017, nearly **`{python} total_flights_fmt`** passengers placed a bet against the clock. Most won, **`{python} reliability_pct_fmt` %** of flights completed their journey, yet the remaining **`{python} cancellations_fmt`** cancellations still displaced thousands of travelers, often costing missed important meetings or family events. Even one cancellation might cause someone to lose a job opportunity or even missed the last sight to love ones.
+
+As data scientists, we ask: **Is it just bad luck, or is the system rigged?**
+
+This analysis explores the “Gamble of Time” during one of the busiest travel periods of the year by looking at three risk factors: the calendar, the dealer (airlines), and the house rules (cancelation causes).
+
+::: {.callout-note}
+#### Key Metric
+**`{python} reliability_pct_fmt` % reliability rate** — but the other **`{python} danger_pct_fmt` %** clusters in predictable “danger zones.”
+:::
+
+## 1. The Shuffle: The Thanksgiving Spike
+
+The system breathes. It stresses, and it recovers. By analyzing daily flight volumes and their trailing 3-day averages, we can see the precise moment the system “crashes.”
+
+```{python}
+#| label: fig-timeline
+#| fig-cap: "Daily Flight Volume vs. Rolling Average (Nov 2017)"
+fig = go.Figure()
+
+fig.add_trace(
+    go.Bar(
+        x=df_daily["FlightDate"],
+        y=df_daily["Daily_Flights"],
+        name="Daily Flights",
+        marker_color="lightgrey",
+    )
+)
+
+fig.add_trace(
+    go.Scatter(
+        x=df_daily["FlightDate"],
+        y=pd.to_numeric(df_daily["Avg_Preceding_3_Days"], errors="coerce"),
+        name="3-Day Trend",
+        line=dict(color="#0a9396", width=3),
+    )
+)
+
+fig.add_annotation(
+    x="2017-11-23",
+    y=10000,
+    text="Thanksgiving Day<br>(Volume Drop)",
+    showarrow=True,
+    arrowhead=1,
+)
+
+fig.add_annotation(
+    x="2017-11-26",
+    y=17000,
+    text="Sunday Recovery Spike",
+    showarrow=True,
+    arrowhead=1,
+    ax=0,
+    ay=-40,
+)
+
+fig.update_layout(
+    title="The Rhythm of Holiday Travel",
+    xaxis_title="Date",
+    yaxis_title="Flights",
+    template="simple_white",
+    hovermode="x unified",
+)
+
+fig
+```
+
+**Insight.** Note the massive drop on Thanksgiving Day followed by an immediate increase on the 26th. 
+Although the holiday season is always considered busy, the holiday itself is empty. It is reasonable to see this phenomenon because people are celebrating on the holidays, and go back to work after spending time with family in different places.
+
+### Weekday Load — Picking Your Travel Day & Preparing For The Inevitibles
+
+Thanksgiving week also exposes structural weekday differences. Wednesday shows the heaviest burden, while Saturday is comparatively quiet.
+
+```{python}
+#| label: fig-weekday
+#| fig-cap: "Flight Volume by Day of Week"
+fig = px.bar(
+    weekday_sorted,
+    x="Day_Name",
+    y="Flight_Count",
+    labels={"Day_Name": "Day of week", "Flight_Count": "Flights"},
+    title="Which Weekdays Are Busiest?",
+    color="Color",
+    color_discrete_map=color_map,
+)
+
+fig.update_layout(
+    xaxis={"categoryorder": "total descending"},
+    template="plotly_white",
+    legend_title_text="Ranking",
+)
+
+fig
+```
+
+**Takeaway:** 
+When travelling on Wednesday, airport can increase staff members on duty to maintain the flow in airport and prevent potential delays. Travellers should try book flights with careful considerations on buffer time to prepare for potential delays.
+Weekends stay lighter because most leisure travelers aim to return Sunday and business flyers stay home, so Saturday actually offers some breathing room. But this month's data can potentially be affected by Thanksgiving compare to normal weekend patterns.
+Still, while Sunday, Nov 26th was the single busiest day, Wednesday captured the highest total volume for the month. This is driven by two factors:
+
+-- Calendar Structure: November 2017 contained five Wednesdays compared to only four Sundays.
+
+-- The 'Getaway': Wednesday, Nov 22nd (right before Thanksgiving) is a peak travel day, compounding the volume of the standard business-travel traffic seen on typical Wednesdays.
+
+
+## 2. The Dealers: Airline Risk Profiles
+
+Not all airlines play by the same rules. Some, like Alaska Airlines, take a ‘high reward, managed risk’ approach—arriving early yet keeping delays capped—so the chart below highlights which carrier is the better bet when a tight connection really matters.
+
+```{python}
+#| label: fig-dumbbell
+#| fig-cap: "Airline Performance: Max Early vs. Max Delay (Click on legend to filter)"
+fig = go.Figure()
+
+fig.add_trace(
+    go.Bar(
+        y=df_risk["Airline_Short"],
+        x=df_risk["Max_Delay_Minutes"],
+        name="Max Delay (Minutes)",
+        orientation="h",
+        marker_color="firebrick",
+    )
+)
+
+fig.add_trace(
+    go.Bar(
+        y=df_risk["Airline_Short"],
+        x=df_risk["Max_Early_Neg"],
+        name="Max Early (Minutes)",
+        orientation="h",
+        marker_color="forestgreen",
+        customdata=df_risk["Max_EarlyDepMin"],
+        hovertemplate="%{y}: %{customdata} mins early<extra></extra>",
+    )
+)
+
+fig.update_layout(
+    title="Risk Profile: Speed vs. Stability",
+    barmode="overlay",
+    xaxis_title="Minutes (Left = Early | Right = Late)",
+    template="plotly_white",
+    legend=dict(x=0.7, y=0.1),
+)
+
+fig
+```
+
+- **Safe bet:** Southwest and Alaska stands out having the least delay time and Alaska also holds the earliest arrival record. Hence it is the best option to consider when travelling with emergency
+- **Tail risk:** American (AA) and Spirit (NK) recorded extreme operational failures exceeding 24 hours. Build buffer time when flying them during peak holidays.
+- **Budget Suprise:** Frontier Airlines defies the "unreliable budget carrier" stereotype. In this dataset, they outperformed Delta and Virgin America in mitigating extreme delay events.
+
+## 3. The House Edge: Why Flights Fail
+
+When flights cancel, “weather” is the usual suspect—but the data reveals geographic fingerprints. 
+
+```{python}
+#| label: fig-cancellations
+#| fig-cap: "Top Cancellation Reasons by Airport"
+fig = px.bar(
+    df_cancel_top,
+    x="Reason_Count",
+    y="Airport_Label",
+    color="Reason_Label",
+    orientation="h",
+    labels={
+        "Reason_Count": "Number of Cancelations",
+        "Airport_Label": "Airport",
+    },
+    title="The Reason Behind Cancelations (Top 10 Airports)",
+    color_discrete_map={
+        "Carrier": "Orange",
+        "Weather": "Green",
+        "NAS / Congestion": "#964B00",
+    },
+)
+
+fig.update_layout(
+    yaxis={"categoryorder": "total ascending"},
+    template="plotly_white",
+)
+
+fig
+```
+
+- **San Francisco (SFO):** 100 % of cancellations are “Congestion”, it might have been due to the airport design.
+- **Chicago (MDW/ORD) & Seattle (SEA):** Worse weather than california so in here people are betting against the weather.
+- **Insights:** The types of cancelation reason are nothing that travellers have controls on, but knowing the reasoning behind the cancallation can help people make better planning.
+
+## 4. The Danger Zones
+
+Regional spokes are the “black holes” of time. These airport + airline combinations carry the highest average departure delays for each carrier.
+
+```{python}
+#| label: tbl-danger
+#| tbl-cap: "Highest Average Delays by Airline & Airport"
+Markdown(display_table.to_markdown(index=False))
+```
+
+- **United ⮕ Knoxville (TYS)** **SkyWest ⮕ Jacksonville (JAX)** and **Delta ⮕ South Bend (SBN)** average 40+ minutes of departure delay.
+
+- This data does not show how bad an airport or an airline is, but it is showing how people should plan their trips when travelling to specific places, to have better odds avoding the "always-delay" airlines.
+
+## Conclusion: Beating the House
+
+The "Gamble of Time" is not a game of pure chance. It is a system of variables—Calendar, Geography, and Carrier—that can be analyzed and mitigated.
+
+To beat this game: the odds in November 2017, a data-driven traveler would have:
+
+- Avoided the post-holiday Sunday rush (Nov 26) or padded their layovers.
+- Skipped SFO connections when fog threatened and favored SEA/PDX instead.
+- Bet on Stability: Chosen Southwest or Alaska Airlines for time-critical trips.
+
+While we cannot control the weather, understanding these patterns lets us manage the **Gamble of Time**—and maybe even tilt it in our favor.
+
+## Limitations:
+- This analysis focuses exclusively on November 2017, but Airline performance is highly seasonal so this finding is hard to generalize.
+- Some of the flights might delay in departure but still arrives on time. 
+- In the future, extend to a complete, yearly data can help better in discovering the trends in flight delays and can produce stronger planning guidance.

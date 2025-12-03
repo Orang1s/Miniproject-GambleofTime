@@ -1,1 +1,4 @@
 al_perf.csv
+
+/.quarto/
+**/*.quarto_ipynb

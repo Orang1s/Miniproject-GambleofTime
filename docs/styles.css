@@ -1,0 +1,61 @@
+:root {
+  --brand-blue: #005f73;
+  --brand-green: #0a9396;
+  --brand-gold: #ee9b00;
+  --brand-red: #ae2012;
+}
+
+body {
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.hero-text {
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.big-number-card {
+  background: #f7f7f7;
+  border-left: 6px solid var(--brand-green);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.big-number-card .label {
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 0.4rem;
+}
+
+.big-number-card .value {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--brand-blue);
+}
+
+.callout-insight {
+  border-left: 4px solid var(--brand-gold);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #444;
+}
+
+.data-table {
+  font-size: 0.95rem;
+}
+
+.data-table thead {
+  background: var(--brand-blue);
+  color: #fff;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: #f4f8fb;
+}
+
